@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // Kick off an {@link AsyncTask} to perform the network request
         TsunamiAsyncTask task = new TsunamiAsyncTask();
         task.execute();
@@ -113,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 jsonResponse = makeHttpRequest(url);
             } catch (IOException e) {
                 // TODO Handle the IOException
+                Log.e(LOG_TAG, "doInBackground: ", e);
             }
 
             // Extract relevant fields from the JSON response and create an {@link Event} object
@@ -164,8 +164,16 @@ public class MainActivity extends AppCompatActivity {
                 urlConnection.connect();
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
+
+                if(urlConnection.getResponseCode()!=200)
+                {
+                    Log.e(LOG_TAG, "makeHttpRequest: +urlConnection.getResponseCode()" );
+                }
+
             } catch (IOException e) {
                 // TODO: Handle the exception
+                Log.e(LOG_TAG, "makeHttpRequest: ",e );
+
             } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
